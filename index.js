@@ -10,7 +10,7 @@ const epayRoute = require("./routes/epay");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
+const path = require("path");
 dotenv.config();
 
 const connection = mysql.createConnection({
@@ -43,6 +43,8 @@ app.use("/api/foods", foodRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/payments", paymentRoute);
 app.use("/api/epays", epayRoute);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.listen(5000, () => {
   console.log("Backend server is running");

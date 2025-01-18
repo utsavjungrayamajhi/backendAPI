@@ -26,7 +26,7 @@ router.get("/start-session", (req, res) => {
 //create order
 router.post("/placeOrder", verifyTokenCustomer, async (req, res) => {
   try {
-    const { cartItems } = req.body;
+    const cartItems = req.body;
     console.log(JSON.stringify(cartItems));
     const newOrder = await Order.create({
       customerId: req.customer.customerId,
@@ -37,43 +37,9 @@ router.post("/placeOrder", verifyTokenCustomer, async (req, res) => {
         0
       ),
     });
-    console.log(newOrder);
+    console.log(req.body);
 
     res.status(200).json(newOrder);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
-//update
-router.put("/:id", verifyTokenAndSuper, async (req, res) => {
-  try {
-    await Order.update(req.body, {
-      where: {
-        id: req.params.id,
-      },
-      returning: true,
-      plain: true,
-    });
-
-    const updatedOrder = await Order.findByPk(req.params.id);
-
-    res.status(200).json(updatedOrder);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-//delete foodItem
-router.delete("/:id", verifyTokenAndSuper, async (req, res) => {
-  try {
-    await Order.destroy({
-      where: {
-        id: req.params.id,
-      },
-    });
-
-    res.status(200).json("FoodItem has been deleted ");
   } catch (error) {
     res.status(500).json(error);
   }
@@ -103,28 +69,4 @@ router.get("/", verifyTokenAndSuper, async (req, res) => {
   }
 });
 
-//get monthly stats
-router.get("/stats", verifyTokenAndSuper, async (req, res) => {
-  const date = new Date();
-  const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
-  const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
-
-  try {
-    const income = await Order.findAll({
-      attributes: [
-        [fn("MONTH", col("createdAt"), "month")],
-        [fn("SUM", col("totalPrice")), "total"],
-      ],
-      where: {
-        createdAt: {
-          [op.gte]: previousMonth,
-        },
-      },
-      group: [fn("MONTH", col("createdAt"))],
-      raw: true,
-    });
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
 module.exports = router;
