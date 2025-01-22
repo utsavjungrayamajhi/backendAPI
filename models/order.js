@@ -18,6 +18,19 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
+      customerName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      hall: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      seat: {
+        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+      },
       foodItems: {
         type: DataTypes.JSON,
         allowNull: false,
@@ -26,7 +39,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+
       status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "pending",
+      },
+      delivered: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "pending",

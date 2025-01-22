@@ -17,6 +17,18 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
       },
+      customerName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      hall: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      seat: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       foodItems: {
         type: Sequelize.JSON,
         allowNull: false,
@@ -26,6 +38,11 @@ module.exports = {
         allowNull: false,
       },
       status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: "pending",
+      },
+      delivered: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: "pending",

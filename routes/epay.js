@@ -78,10 +78,17 @@ router.get("/complete-payment", async (req, res) => {
       { where: { id: orderData.id } }
     );
 
+    const updatedOrderData = await Order.findOne({
+      where: { customerId: paymentInfo.response.transaction_uuid },
+    });
+
     // Respond with success message
-    setTimeout(() => {
-      res.redirect("http://localhost:5173/");
-    }, 5000);
+    console.log(updatedOrderData.dataValues);
+    res.redirect(
+      `http://localhost:5173/?orderData=${encodeURIComponent(
+        JSON.stringify(updatedOrderData.dataValues)
+      )}`
+    );
 
     // res.json({
     //   success: true,

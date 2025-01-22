@@ -26,18 +26,19 @@ router.get("/start-session", (req, res) => {
 //create order
 router.post("/placeOrder", verifyTokenCustomer, async (req, res) => {
   try {
-    const cartItems = req.body;
-    console.log(JSON.stringify(cartItems));
+    const { cart, formData } = req.body;
     const newOrder = await Order.create({
       customerId: req.customer.customerId,
-      foodItems: JSON.stringify(cartItems),
+      customerName: formData.fullname,
+      hall: formData.hall,
+      seat: formData.seat,
+      foodItems: JSON.stringify(cart),
       status: "pending",
-      totalPrice: cartItems.reduce(
+      totalPrice: cart.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
       ),
     });
-    console.log(req.body);
 
     res.status(200).json(newOrder);
   } catch (error) {
@@ -60,12 +61,31 @@ router.get("/find/:cId", verifyToken, async (req, res) => {
 });
 
 //get all orders
-router.get("/", verifyTokenAndSuper, async (req, res) => {
+router.get("/", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    const orders = await Order.findAll();
+    const orders = await Order.findAll({
+      order: [["createdAt", "DESC"]],
+    });
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json(error);
+  }
+});
+
+router.patch("/:id", verifyTokenAndAuthorization, async (req, res) => {
+  const { id } = req.params;
+  const { delivered } = req.body;
+
+  try {
+    const updatedOrder = await Order.update(
+      { delivered: delivered },
+      { where: { id: id } }
+    );
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error." });
   }
 });
 
