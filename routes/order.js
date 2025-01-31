@@ -61,7 +61,7 @@ router.get("/find/:cId", verifyToken, async (req, res) => {
 });
 
 //get all orders
-router.get("/", verifyTokenAndAuthorization, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const orders = await Order.findAll({
       order: [["createdAt", "DESC"]],
